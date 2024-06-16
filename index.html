@@ -220,14 +220,15 @@
                     </label>
                     <select class="columnType" required onchange="updateColumnConfig(this)">
                         <option value="">Select Type</option>
-                        <option value="string_linked_sourced">Linked String</option>
                         <option value="string_random">Random String</option>
-                        <option value="int_conditional">Conditional Integer</option>
+                        <option value="string_linked_sourced">Linked String</option>
                         <option value="string_conditional_sourced">Conditional Sourced String</option>
-                        <option value="int_random">Random Integer</option>
                         <option value="string_random_sourced">Random Source String</option>
+                        <option value="int_random">Random Integer</option>
+                        <option value="int_conditional">Conditional Integer</option>
                         <option value="date_random">Random Date</option>
                         <option value="id_random">Random ID</option>
+                        <option value="id_primary">Primary ID</option>
                     </select>
 
                     <div class="tooltip" style="display: none;">
@@ -311,6 +312,11 @@
                         <label for="idType">ID Type:</label>
                         <input type="text" class="idType">
                     </div>
+
+                    <div class="configIdPrimary dynamic-field">
+                        <label for="idTypePrimary">ID Type:</label>
+                        <input type="text" class="idTypePrimary">
+                    </div>
                 </div>
             </div>
             <button type="button" onclick="addColumn()">Add Another Column</button>
@@ -361,6 +367,9 @@
             } else if (columnType === 'id_random') {
                 columnEntry.querySelector('.configIdRandom').style.display = 'block';
                 tooltipMessage = 'Select a random ID from the ID Graph';
+            } else if (columnType === 'id_primary') {
+                columnEntry.querySelector('.configIdPrimary').style.display = 'block';
+                tooltipMessage = 'Primary ID for the table';
             }
 
             if (tooltipMessage) {
@@ -421,14 +430,15 @@
                     </label>
                     <select class="columnType" required onchange="updateColumnConfig(this)">
                         <option value="">Select Type</option>
-                        <option value="string_linked_sourced">Linked String</option>
                         <option value="string_random">Random String</option>
-                        <option value="int_conditional">Conditional Integer</option>
+                        <option value="string_linked_sourced">Linked String</option>
                         <option value="string_conditional_sourced">Conditional Sourced String</option>
-                        <option value="int_random">Random Integer</option>
                         <option value="string_random_sourced">Random Source String</option>
+                        <option value="int_random">Random Integer</option>
+                        <option value="int_conditional">Conditional Integer</option>
                         <option value="date_random">Random Date</option>
                         <option value="id_random">Random ID</option>
+                        <option value="id_primary">Primary ID</option>
                     </select>
 
                     <div class="tooltip" style="display: none;">
@@ -511,6 +521,11 @@
                     <div class="configIdRandom dynamic-field">
                         <label for="idType">ID Type:</label>
                         <input type="text" class="idType">
+                    </div>
+
+                    <div class="configIdPrimary dynamic-field">
+                        <label for="idTypePrimary">ID Type:</label>
+                        <input type="text" class="idTypePrimary">
                     </div>
                 </div>
             `;
@@ -600,6 +615,11 @@
                     columnConfig = `
             column_config: 
               id_type_1: ${idType}`;
+                } else if (columnType === 'id_primary') {
+                    const idTypePrimary = columnEntry.querySelector('.idTypePrimary').value;
+                    columnConfig = `
+            column_config: 
+              id_type_1: ${idTypePrimary}`;
                 }
 
                 columns.push(`
