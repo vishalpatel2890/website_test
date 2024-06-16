@@ -552,14 +552,14 @@
                     const srcColumnName = columnEntry.querySelector('.srcColumnName').value;
                     const srcColumnTable = columnEntry.querySelector('.srcColumnTable').value;
                     columnConfig = `
-            column_config: 
-              src_column_name: ${srcColumnName}
-              src_column_table: ${srcColumnTable}`;
+          column_config: 
+            src_column_name: ${srcColumnName}
+            src_column_table: ${srcColumnTable}`;
                 } else if (columnType === 'string_random') {
                     const randomValues = columnEntry.querySelector('.randomValues').value.split(',').map(val => val.trim());
                     columnConfig = `
-            column_config: 
-              - '${randomValues.join("' \n              - '")}'`;
+          column_config: 
+            - '${randomValues.join("' \n            - '")}'`;
                 } else if (columnType === 'int_conditional') {
                     const conditionalAttribute = columnEntry.querySelector('.conditionalAttribute').value;
                     let conditionalValues = '';
@@ -568,58 +568,58 @@
                         const minValue = conditionalEntry.querySelector('.minValue').value;
                         const maxValue = conditionalEntry.querySelector('.maxValue').value;
                         conditionalValues += `
-                - conditional_value: '${conditionalValue}'
-                  min_value: ${minValue}
-                  max_value: ${maxValue}`;
+              - conditional_value: '${conditionalValue}'
+                min_value: ${minValue}
+                max_value: ${maxValue}`;
                     });
                     columnConfig = `
-            column_config: 
-              conditional_attribute: ${conditionalAttribute}
-              conditional_values: ${conditionalValues}`;
+          column_config: 
+            conditional_attribute: ${conditionalAttribute}
+            conditional_values: ${conditionalValues}`;
                 } else if (columnType === 'string_conditional_sourced') {
                     const conditionalAttributeSrc = columnEntry.querySelector('.conditionalAttributeSrc').value;
                     const srcTable = columnEntry.querySelector('.srcTable').value;
                     const srcColumns = columnEntry.querySelector('.srcColumns').value.split(',').map(val => val.trim()).join(', ');
                     columnConfig = `
-            column_config:        
-              conditional_attribute: ${conditionalAttributeSrc}
-              src_table: ${srcTable}
-              src_columns: ${srcColumns}`;
+          column_config:        
+            conditional_attribute: ${conditionalAttributeSrc}
+            src_table: ${srcTable}
+            src_columns: ${srcColumns}`;
                 } else if (columnType === 'int_random') {
                     const minValue = columnEntry.querySelector('.minValue').value;
                     const maxValue = columnEntry.querySelector('.maxValue').value;
                     columnConfig = `
-            column_config: 
-              min: ${minValue}
-              max: ${maxValue}`;
+          column_config: 
+            min: ${minValue}
+            max: ${maxValue}`;
                 } else if (columnType === 'string_random_sourced') {
                     const srcTableRandom = columnEntry.querySelector('.srcTableRandom').value;
                     const srcColumnsRandom = columnEntry.querySelector('.srcColumnsRandom').value.split(',').map(val => val.trim()).join(', ');
                     columnConfig = `
-            column_config: 
-              src_table: ${srcTableRandom}
-              src_columns: ${srcColumnsRandom}`;
+          column_config: 
+            src_table: ${srcTableRandom}
+            src_columns: ${srcColumnsRandom}`;
                 } else if (columnType === 'date_random') {
                     const newColMin = columnEntry.querySelector('.newColMin').value;
                     const newColMax = columnEntry.querySelector('.newColMax').value;
                     const appendColMin = columnEntry.querySelector('.appendColMin').value;
                     const appendColMax = columnEntry.querySelector('.appendColMax').value;
                     columnConfig = `
-            column_config:
-              new_col_min: ${newColMin}
-              new_col_max: ${newColMax}
-              append_col_min: ${appendColMin}
-              append_col_max: ${appendColMax}`;
+          column_config:
+            new_col_min: ${newColMin}
+            new_col_max: ${newColMax}
+            append_col_min: ${appendColMin}
+            append_col_max: ${appendColMax}`;
                 } else if (columnType === 'id_random') {
                     const idType = columnEntry.querySelector('.idType').value;
                     columnConfig = `
-            column_config: 
-              id_type_1: ${idType}`;
+          column_config: 
+            id_type_1: ${idType}`;
                 } else if (columnType === 'id_primary') {
                     const idTypePrimary = columnEntry.querySelector('.idTypePrimary').value;
                     columnConfig = `
-            column_config: 
-              id_type_1: ${idTypePrimary}`;
+          column_config: 
+            id_type_1: ${idTypePrimary}`;
                 }
 
                 columns.push(`
