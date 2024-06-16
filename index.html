@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YAML Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Nunito', sans-serif;
             display: flex;
             justify-content: space-between;
             margin: 20px;
         }
         form {
-            width: 45%;
+            width: 60%;
         }
         label {
             display: block;
@@ -32,19 +33,39 @@
             border: none;
             cursor: pointer;
         }
+        button.reset {
+            background-color: #f44336;
+        }
         .output {
-            width: 45%;
+            width: 35%;
             white-space: pre;
             background: #f4f4f4;
             padding: 10px;
+            margin-left: 20px;
         }
         .dynamic-field {
             display: none;
         }
+        .columns-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
         .column-entry {
+            width: 48%;
             margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #ccc;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            box-sizing: border-box;
+        }
+        .conditional-entry {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
         }
     </style>
 </head>
@@ -73,7 +94,7 @@
             <label for="percentWithMultipleRecords">Percent With Multiple Records:</label>
             <input type="number" id="percentWithMultipleRecords" name="percentWithMultipleRecords" required>
 
-            <div id="columnsContainer">
+            <div id="columnsContainer" class="columns-container">
                 <h3>Column Configuration</h3>
                 <div class="column-entry">
                     <label for="columnName">Column Name:</label>
@@ -108,9 +129,19 @@
                     <div class="configIntConditional dynamic-field">
                         <label for="conditionalAttribute">Conditional Attribute:</label>
                         <input type="text" class="conditionalAttribute">
-                        
-                        <label for="conditionalValues">Conditional Values (JSON array):</label>
-                        <textarea class="conditionalValues" rows="5"></textarea>
+                        <div id="conditionalValuesContainer">
+                            <h4>Conditional Values</h4>
+                            <div class="conditional-entry">
+                                <label for="conditionalValue">Conditional Value:</label>
+                                <input type="text" class="conditionalValue">
+                                <label for="minValue">Min Value:</label>
+                                <input type="number" class="minValue">
+                                <label for="maxValue">Max Value:</label>
+                                <input type="number" class="maxValue">
+                                <button type="button" onclick="removeCondition(this)">Remove Condition</button>
+                            </div>
+                        </div>
+                        <button type="button" onclick="addCondition(this)">Add Another Condition</button>
                     </div>
 
                     <div class="configStringConditionalSourced dynamic-field">
@@ -162,6 +193,7 @@
             </div>
             <button type="button" onclick="addColumn()">Add Another Column</button>
             <button type="submit">Generate YAML</button>
+            <button type="button" class="reset" onclick="resetForm()">Reset Form</button>
         </form>
     </div>
 
@@ -207,7 +239,128 @@
                 input.style.display = input.classList.contains('dynamic-field') ? 'none' : '';
             });
 
+            newColumnEntry.querySelectorAll('.conditional-entry').forEach(entry => entry.remove());
+
             columnsContainer.appendChild(newColumnEntry);
+        }
+
+        function addCondition(button) {
+            const container = button.previousElementSibling;
+            const conditionEntry = container.querySelector('.conditional-entry');
+            const newConditionEntry = conditionEntry.cloneNode(true);
+
+            // Reset the cloned inputs
+            newConditionEntry.querySelectorAll('input').forEach(input => input.value = '');
+
+            container.appendChild(newConditionEntry);
+        }
+
+        function removeCondition(button) {
+            const container = button.closest('.conditional-entry');
+            container.remove();
+        }
+
+        function resetForm() {
+            document.getElementById('yamlForm').reset();
+            document.getElementById('output').textContent = '';
+            const columnsContainer = document.getElementById('columnsContainer');
+            columnsContainer.innerHTML = `
+                <h3>Column Configuration</h3>
+                <div class="column-entry">
+                    <label for="columnName">Column Name:</label>
+                    <input type="text" class="columnName" required>
+
+                    <label for="columnType">Column Type:</label>
+                    <select class="columnType" required onchange="updateColumnConfig(this)">
+                        <option value="">Select Type</option>
+                        <option value="string_linked_sourced">string_linked_sourced</option>
+                        <option value="string_random">string_random</option>
+                        <option value="int_conditional">int_conditional</option>
+                        <option value="string_conditional_sourced">string_conditional_sourced</option>
+                        <option value="int_random">int_random</option>
+                        <option value="string_random_sourced">string_random_sourced</option>
+                        <option value="date_random">date_random</option>
+                        <option value="id_random">id_random</option>
+                    </select>
+
+                    <div class="configStringLinkedSourced dynamic-field">
+                        <label for="srcColumnName">Source Column Name:</label>
+                        <input type="text" class="srcColumnName">
+                        
+                        <label for="srcColumnTable">Source Column Table:</label>
+                        <input type="text" class="srcColumnTable">
+                    </div>
+
+                    <div class="configStringRandom dynamic-field">
+                        <label for="randomValues">Random Values (comma separated):</label>
+                        <input type="text" class="randomValues">
+                    </div>
+
+                    <div class="configIntConditional dynamic-field">
+                        <label for="conditionalAttribute">Conditional Attribute:</label>
+                        <input type="text" class="conditionalAttribute">
+                        <div id="conditionalValuesContainer">
+                            <h4>Conditional Values</h4>
+                            <div class="conditional-entry">
+                                <label for="conditionalValue">Conditional Value:</label>
+                                <input type="text" class="conditionalValue">
+                                <label for="minValue">Min Value:</label>
+                                <input type="number" class="minValue">
+                                <label for="maxValue">Max Value:</label>
+                                <input type="number" class="maxValue">
+                                <button type="button" onclick="removeCondition(this)">Remove Condition</button>
+                            </div>
+                        </div>
+                        <button type="button" onclick="addCondition(this)">Add Another Condition</button>
+                    </div>
+
+                    <div class="configStringConditionalSourced dynamic-field">
+                        <label for="conditionalAttributeSrc">Conditional Attribute:</label>
+                        <input type="text" class="conditionalAttributeSrc">
+
+                        <label for="srcTable">Source Table:</label>
+                        <input type="text" class="srcTable">
+
+                        <label for="srcColumns">Source Columns (comma separated):</label>
+                        <input type="text" class="srcColumns">
+                    </div>
+
+                    <div class="configIntRandom dynamic-field">
+                        <label for="minValue">Min Value:</label>
+                        <input type="number" class="minValue">
+                        
+                        <label for="maxValue">Max Value:</label>
+                        <input type="number" class="maxValue">
+                    </div>
+
+                    <div class="configStringRandomSourced dynamic-field">
+                        <label for="srcTableRandom">Source Table:</label>
+                        <input type="text" class="srcTableRandom">
+
+                        <label for="srcColumnsRandom">Source Columns (comma separated):</label>
+                        <input type="text" class="srcColumnsRandom">
+                    </div>
+
+                    <div class="configDateRandom dynamic-field">
+                        <label for="newColMin">New Col Min:</label>
+                        <input type="number" class="newColMin">
+
+                        <label for="newColMax">New Col Max:</label>
+                        <input type="number" class="newColMax">
+
+                        <label for="appendColMin">Append Col Min:</label>
+                        <input type="number" class="appendColMin">
+
+                        <label for="appendColMax">Append Col Max:</label>
+                        <input type="number" class="appendColMax">
+                    </div>
+
+                    <div class="configIdRandom dynamic-field">
+                        <label for="idType">ID Type:</label>
+                        <input type="text" class="idType">
+                    </div>
+                </div>
+            `;
         }
 
         document.getElementById('yamlForm').addEventListener('submit', function(event) {
@@ -241,15 +394,20 @@
               - '${randomValues.join("' \n              - '")}'`;
                 } else if (columnType === 'int_conditional') {
                     const conditionalAttribute = columnEntry.querySelector('.conditionalAttribute').value;
-                    const conditionalValues = JSON.parse(columnEntry.querySelector('.conditionalValues').value);
-                    const conditionalValuesYaml = conditionalValues.map(value => `
-                - conditional_value: '${value.conditional_value}'
-                  min_value: ${value.min_value}
-                  max_value: ${value.max_value}`).join('');
+                    let conditionalValues = '';
+                    columnEntry.querySelectorAll('.conditional-entry').forEach(conditionalEntry => {
+                        const conditionalValue = conditionalEntry.querySelector('.conditionalValue').value;
+                        const minValue = conditionalEntry.querySelector('.minValue').value;
+                        const maxValue = conditionalEntry.querySelector('.maxValue').value;
+                        conditionalValues += `
+                - conditional_value: '${conditionalValue}'
+                  min_value: ${minValue}
+                  max_value: ${maxValue}`;
+                    });
                     columnConfig = `
             column_config: 
               conditional_attribute: ${conditionalAttribute}
-              conditional_values: ${conditionalValuesYaml}`;
+              conditional_values: ${conditionalValues}`;
                 } else if (columnType === 'string_conditional_sourced') {
                     const conditionalAttributeSrc = columnEntry.querySelector('.conditionalAttributeSrc').value;
                     const srcTable = columnEntry.querySelector('.srcTable').value;
