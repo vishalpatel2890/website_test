@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YAML Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: space-between;
+            margin: 20px;
+        }
+        form {
+            width: 45%;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .output {
+            width: 45%;
+            white-space: pre;
+            background: #f4f4f4;
+            padding: 10px;
+        }
+        .dynamic-field {
+            display: none;
+        }
+        .column-entry {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>YAML Generator</h1>
+        <form id="yamlForm">
+            <label for="tableName">Table Name:</label>
+            <input type="text" id="tableName" name="tableName" required>
+
+            <label for="index">Index:</label>
+            <input type="number" id="index" name="index" required>
+
+            <label for="type">Type:</label>
+            <input type="text" id="type" name="type" required>
+
+            <label for="minRecordsPerProfile">Min Records Per Profile:</label>
+            <input type="number" id="minRecordsPerProfile" name="minRecordsPerProfile" required>
+
+            <label for="maxRecordsPerProfile">Max Records Per Profile:</label>
+            <input type="number" id="maxRecordsPerProfile" name="maxRecordsPerProfile" required>
+
+            <label for="percentProfilesWithRecords">Percent Profiles With Records:</label>
+            <input type="number" id="percentProfilesWithRecords" name="percentProfilesWithRecords" required>
+
+            <label for="percentWithMultipleRecords">Percent With Multiple Records:</label>
+            <input type="number" id="percentWithMultipleRecords" name="percentWithMultipleRecords" required>
+
+            <div id="columnsContainer">
+                <h3>Column Configuration</h3>
+                <div class="column-entry">
+                    <label for="columnName">Column Name:</label>
+                    <input type="text" class="columnName" required>
+
+                    <label for="columnType">Column Type:</label>
+                    <select class="columnType" required onchange="updateColumnConfig(this)">
+                        <option value="">Select Type</option>
+                        <option value="string_linked_sourced">string_linked_sourced</option>
+                        <option value="string_random">string_random</option>
+                        <option value="int_conditional">int_conditional</option>
+                        <option value="string_conditional_sourced">string_conditional_sourced</option>
+                        <option value="int_random">int_random</option>
+                        <option value="string_random_sourced">string_random_sourced</option>
+                        <option value="date_random">date_random</option>
+                        <option value="id_random">id_random</option>
+                    </select>
+
+                    <div class="configStringLinkedSourced dynamic-field">
+                        <label for="srcColumnName">Source Column Name:</label>
+                        <input type="text" class="srcColumnName">
+                        
+                        <label for="srcColumnTable">Source Column Table:</label>
+                        <input type="text" class="srcColumnTable">
+                    </div>
+
+                    <div class="configStringRandom dynamic-field">
+                        <label for="randomValues">Random Values (comma separated):</label>
+                        <input type="text" class="randomValues">
+                    </div>
+
+                    <div class="configIntConditional dynamic-field">
+                        <label for="conditionalAttribute">Conditional Attribute:</label>
+                        <input type="text" class="conditionalAttribute">
+                        
+                        <label for="conditionalValues">Conditional Values (JSON array):</label>
+                        <textarea class="conditionalValues" rows="5"></textarea>
+                    </div>
+
+                    <div class="configStringConditionalSourced dynamic-field">
+                        <label for="conditionalAttributeSrc">Conditional Attribute:</label>
+                        <input type="text" class="conditionalAttributeSrc">
+
+                        <label for="srcTable">Source Table:</label>
+                        <input type="text" class="srcTable">
+
+                        <label for="srcColumns">Source Columns (comma separated):</label>
+                        <input type="text" class="srcColumns">
+                    </div>
+
+                    <div class="configIntRandom dynamic-field">
+                        <label for="minValue">Min Value:</label>
+                        <input type="number" class="minValue">
+                        
+                        <label for="maxValue">Max Value:</label>
+                        <input type="number" class="maxValue">
+                    </div>
+
+                    <div class="configStringRandomSourced dynamic-field">
+                        <label for="srcTableRandom">Source Table:</label>
+                        <input type="text" class="srcTableRandom">
+
+                        <label for="srcColumnsRandom">Source Columns (comma separated):</label>
+                        <input type="text" class="srcColumnsRandom">
+                    </div>
+
+                    <div class="configDateRandom dynamic-field">
+                        <label for="newColMin">New Col Min:</label>
+                        <input type="number" class="newColMin">
+
+                        <label for="newColMax">New Col Max:</label>
+                        <input type="number" class="newColMax">
+
+                        <label for="appendColMin">Append Col Min:</label>
+                        <input type="number" class="appendColMin">
+
+                        <label for="appendColMax">Append Col Max:</label>
+                        <input type="number" class="appendColMax">
+                    </div>
+
+                    <div class="configIdRandom dynamic-field">
+                        <label for="idType">ID Type:</label>
+                        <input type="text" class="idType">
+                    </div>
+                </div>
+            </div>
+            <button type="button" onclick="addColumn()">Add Another Column</button>
+            <button type="submit">Generate YAML</button>
+        </form>
+    </div>
+
+    <div class="output" id="output"></div>
+
+    <script>
+        function updateColumnConfig(selectElement) {
+            const columnType = selectElement.value;
+            const columnEntry = selectElement.closest('.column-entry');
+            const configSections = columnEntry.querySelectorAll('.dynamic-field');
+            configSections.forEach(section => section.style.display = 'none');
+
+            if (columnType === 'string_linked_sourced') {
+                columnEntry.querySelector('.configStringLinkedSourced').style.display = 'block';
+            } else if (columnType === 'string_random') {
+                columnEntry.querySelector('.configStringRandom').style.display = 'block';
+            } else if (columnType === 'int_conditional') {
+                columnEntry.querySelector('.configIntConditional').style.display = 'block';
+            } else if (columnType === 'string_conditional_sourced') {
+                columnEntry.querySelector('.configStringConditionalSourced').style.display = 'block';
+            } else if (columnType === 'int_random') {
+                columnEntry.querySelector('.configIntRandom').style.display = 'block';
+            } else if (columnType === 'string_random_sourced') {
+                columnEntry.querySelector('.configStringRandomSourced').style.display = 'block';
+            } else if (columnType === 'date_random') {
+                columnEntry.querySelector('.configDateRandom').style.display = 'block';
+            } else if (columnType === 'id_random') {
+                columnEntry.querySelector('.configIdRandom').style.display = 'block';
+            }
+        }
+
+        function addColumn() {
+            const columnsContainer = document.getElementById('columnsContainer');
+            const columnEntry = document.querySelector('.column-entry');
+            const newColumnEntry = columnEntry.cloneNode(true);
+
+            // Reset the cloned inputs
+            newColumnEntry.querySelectorAll('input, select, textarea').forEach(input => {
+                input.value = '';
+                if (input.tagName === 'SELECT') {
+                    input.selectedIndex = 0;
+                }
+                input.style.display = input.classList.contains('dynamic-field') ? 'none' : '';
+            });
+
+            columnsContainer.appendChild(newColumnEntry);
+        }
+
+        document.getElementById('yamlForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const tableName = document.getElementById('tableName').value;
+            const index = document.getElementById('index').value;
+            const type = document.getElementById('type').value;
+            const minRecordsPerProfile = document.getElementById('minRecordsPerProfile').value;
+            const maxRecordsPerProfile = document.getElementById('maxRecordsPerProfile').value;
+            const percentProfilesWithRecords = document.getElementById('percentProfilesWithRecords').value;
+            const percentWithMultipleRecords = document.getElementById('percentWithMultipleRecords').value;
+
+            let columns = [];
+            document.querySelectorAll('.column-entry').forEach(columnEntry => {
+                const columnName = columnEntry.querySelector('.columnName').value;
+                const columnType = columnEntry.querySelector('.columnType').value;
+
+                let columnConfig = '';
+                if (columnType === 'string_linked_sourced') {
+                    const srcColumnName = columnEntry.querySelector('.srcColumnName').value;
+                    const srcColumnTable = columnEntry.querySelector('.srcColumnTable').value;
+                    columnConfig = `
+            column_config: 
+              src_column_name: ${srcColumnName}
+              src_column_table: ${srcColumnTable}`;
+                } else if (columnType === 'string_random') {
+                    const randomValues = columnEntry.querySelector('.randomValues').value.split(',').map(val => val.trim());
+                    columnConfig = `
+            column_config: 
+              - '${randomValues.join("' \n              - '")}'`;
+                } else if (columnType === 'int_conditional') {
+                    const conditionalAttribute = columnEntry.querySelector('.conditionalAttribute').value;
+                    const conditionalValues = JSON.parse(columnEntry.querySelector('.conditionalValues').value);
+                    const conditionalValuesYaml = conditionalValues.map(value => `
+                - conditional_value: '${value.conditional_value}'
+                  min_value: ${value.min_value}
+                  max_value: ${value.max_value}`).join('');
+                    columnConfig = `
+            column_config: 
+              conditional_attribute: ${conditionalAttribute}
+              conditional_values: ${conditionalValuesYaml}`;
+                } else if (columnType === 'string_conditional_sourced') {
+                    const conditionalAttributeSrc = columnEntry.querySelector('.conditionalAttributeSrc').value;
+                    const srcTable = columnEntry.querySelector('.srcTable').value;
+                    const srcColumns = columnEntry.querySelector('.srcColumns').value.split(',').map(val => val.trim()).join(', ');
+                    columnConfig = `
+            column_config:        
+              conditional_attribute: ${conditionalAttributeSrc}
+              src_table: ${srcTable}
+              src_columns: ${srcColumns}`;
+                } else if (columnType === 'int_random') {
+                    const minValue = columnEntry.querySelector('.minValue').value;
+                    const maxValue = columnEntry.querySelector('.maxValue').value;
+                    columnConfig = `
+            column_config: 
+              min: ${minValue}
+              max: ${maxValue}`;
+                } else if (columnType === 'string_random_sourced') {
+                    const srcTableRandom = columnEntry.querySelector('.srcTableRandom').value;
+                    const srcColumnsRandom = columnEntry.querySelector('.srcColumnsRandom').value.split(',').map(val => val.trim()).join(', ');
+                    columnConfig = `
+            column_config: 
+              src_table: ${srcTableRandom}
+              src_columns: ${srcColumnsRandom}`;
+                } else if (columnType === 'date_random') {
+                    const newColMin = columnEntry.querySelector('.newColMin').value;
+                    const newColMax = columnEntry.querySelector('.newColMax').value;
+                    const appendColMin = columnEntry.querySelector('.appendColMin').value;
+                    const appendColMax = columnEntry.querySelector('.appendColMax').value;
+                    columnConfig = `
+            column_config:
+              new_col_min: ${newColMin}
+              new_col_max: ${newColMax}
+              append_col_min: ${appendColMin}
+              append_col_max: ${appendColMax}`;
+                } else if (columnType === 'id_random') {
+                    const idType = columnEntry.querySelector('.idType').value;
+                    columnConfig = `
+            column_config: 
+              id_type_1: ${idType}`;
+                }
+
+                columns.push(`
+      - name: ${columnName}
+        type: ${columnType}${columnConfig}`);
+            });
+
+            const yaml = `
+tables: 
+  - name: ${tableName}
+    index: ${index}
+    type: ${type}
+    min_records_per_profile: ${minRecordsPerProfile}
+    max_records_per_profile: ${maxRecordsPerProfile}
+    percent_profiles_with_records: ${percentProfilesWithRecords}
+    percent_with_multiple_records: ${percentWithMultipleRecords}
+    columns:${columns.join('')}
+            `;
+
+            document.getElementById('output').textContent = yaml.trim();
+        });
+    </script>
+</body>
+</html>
