@@ -37,13 +37,26 @@
         button.reset {
             background-color: #f44336;
         }
-        .output {
+        .output-container {
+            display: flex;
+            flex-direction: column;
             width: 35%;
+        }
+        .output {
             white-space: pre;
             background: #f4f4f4;
             padding: 10px;
-            margin-left: 20px;
+            margin-bottom: 20px;
             flex-shrink: 0;
+        }
+        .notes {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            background: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: vertical;
         }
         .dynamic-field {
             display: none;
@@ -306,7 +319,10 @@
         </form>
     </div>
 
-    <div class="output" id="output"></div>
+    <div class="output-container">
+        <div class="output" id="output"></div>
+        <textarea class="notes" placeholder="Notes..."></textarea>
+    </div>
 
     <script>
         function updateColumnConfig(selectElement) {
