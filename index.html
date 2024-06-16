@@ -18,6 +18,7 @@
         label {
             display: block;
             margin-top: 10px;
+            position: relative;
         }
         input, select, textarea {
             width: 100%;
@@ -53,13 +54,14 @@
             gap: 20px;
         }
         .column-entry {
-            flex: 1 1 48%;
+            width: calc(50% - 10px);
             margin-bottom: 20px;
             padding: 20px;
             border: 2px solid #ccc;
             border-radius: 5px;
             background-color: #f9f9f9;
             box-sizing: border-box;
+            flex-grow: 1;
         }
         .conditional-entry {
             margin-bottom: 10px;
@@ -76,6 +78,47 @@
         .form-row .form-column {
             flex: 1;
         }
+        .tooltip {
+            display: inline-block;
+            margin-left: 5px;
+            cursor: pointer;
+            color: #555;
+            position: relative;
+        }
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 220px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            padding: 5px;
+            border-radius: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* Position the tooltip above the icon */
+            left: 50%;
+            margin-left: -110px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .tooltip .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%; /* Bottom of the tooltip */
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        .tooltip-visible {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -84,40 +127,69 @@
         <form id="yamlForm">
             <div class="form-row">
                 <div class="form-column">
-                    <label for="tableName">Table Name:</label>
+                    <label for="tableName">
+                        Table Name:
+                        <span class="tooltip">&#9432
+                            <span class="tooltip-text">Enter name of table you would like to create</span>
+                        </span>
+                    </label>
                     <input type="text" id="tableName" name="tableName" required>
                 </div>
                 <div class="form-column">
-                    <label for="index">Index:</label>
+                    <label for="index">Index:
+                        <span class="tooltip">&#9432
+                            <span class="tooltip-text">This needs to be unique across all tables</span>
+                        </span>
+                    </label>
                     <input type="number" id="index" name="index" required>
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-column">
-                    <label for="type">Type:</label>
+                    <label for="type">Type:
+                        <span class="tooltip">&#9432
+                            <span class="tooltip-text">Attribute or Behavior</span>
+                        </span>
+                    </label>
                     <input type="text" id="type" name="type" required>
                 </div>
                 <div class="form-column">
-                    <label for="minRecordsPerProfile">Min Records Per Profile:</label>
+                    <label for="minRecordsPerProfile">Min Records Per Profile:
+                        <span class="tooltip">&#9432
+                            <span class="tooltip-text">Min number of records to create in this table per profile</span>
+                        </span>
+                    </label>
                     <input type="number" id="minRecordsPerProfile" name="minRecordsPerProfile" required>
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-column">
-                    <label for="maxRecordsPerProfile">Max Records Per Profile:</label>
+                    <label for="maxRecordsPerProfile">Max Records Per Profile:
+                        <span class="tooltip">&#9432
+                            <span class="tooltip-text">Max number of records to create in this table per profile</span>
+                        </span>
+                    </label>
                     <input type="number" id="maxRecordsPerProfile" name="maxRecordsPerProfile" required>
                 </div>
                 <div class="form-column">
-                    <label for="percentProfilesWithRecords">Percent Profiles With Records:</label>
+                    <label for="percentProfilesWithRecords">Percent Profiles With Records:
+                        <span class="tooltip">&#9432
+                            <span class="tooltip-text">Percent of random records that should have no records in this table</span>
+                        </span>
+                    </label>
                     <input type="number" id="percentProfilesWithRecords" name="percentProfilesWithRecords" required>
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-column">
-                    <label for="percentWithMultipleRecords">Percent With Multiple Records:</label>
+                    <label for="percentWithMultipleRecords">Percent With Multiple Records:
+                        <span class="tooltip">&#9432
+                            <span class="tooltip-text">Percent of random records that should have multiple records in this table</span>
+                        </span>
+                    </label>
                     <input type="number" id="percentWithMultipleRecords" name="percentWithMultipleRecords" required>
                 </div>
             </div>
@@ -128,18 +200,25 @@
                     <label for="columnName">Column Name:</label>
                     <input type="text" class="columnName" required>
 
-                    <label for="columnType">Column Type:</label>
+                    <label for="columnType">Column Type:
+                        <span class="tooltip">&#9432
+                            <span class="tooltip-text">Select the type of column to create</span>
+                        </span>
+                    </label>
                     <select class="columnType" required onchange="updateColumnConfig(this)">
                         <option value="">Select Type</option>
-                        <option value="string_linked_sourced">string_linked_sourced</option>
-                        <option value="string_random">string_random</option>
-                        <option value="int_conditional">int_conditional</option>
-                        <option value="string_conditional_sourced">string_conditional_sourced</option>
-                        <option value="int_random">int_random</option>
-                        <option value="string_random_sourced">string_random_sourced</option>
-                        <option value="date_random">date_random</option>
-                        <option value="id_random">id_random</option>
+                        <option value="string_linked_sourced">Linked String</option>
+                        <option value="string_random">Random String</option>
+                        <option value="int_conditional">Conditional Integer</option>
+                        <option value="string_conditional_sourced">Conditional Sourced String</option>
+                        <option value="int_random">Random Integer</option>
+                        <option value="string_random_sourced">Random Source String</option>
+                        <option value="date_random">Random Date</option>
+                        <option value="id_random">Random ID</option>
                     </select>
+                    <span class="tooltip" id="columnTooltip">&#9432
+                        <span class="tooltip-text"></span>
+                    </span>
 
                     <div class="configStringLinkedSourced dynamic-field">
                         <label for="srcColumnName">Source Column Name:</label>
@@ -232,24 +311,43 @@
             const columnType = selectElement.value;
             const columnEntry = selectElement.closest('.column-entry');
             const configSections = columnEntry.querySelectorAll('.dynamic-field');
+            const tooltip = columnEntry.querySelector('.tooltip-text');
+            const tooltipContainer = columnEntry.querySelector('.tooltip');
+
             configSections.forEach(section => section.style.display = 'none');
+            tooltipContainer.classList.remove('tooltip-visible');
+            
+            let tooltipText = '';
 
             if (columnType === 'string_linked_sourced') {
                 columnEntry.querySelector('.configStringLinkedSourced').style.display = 'block';
+                tooltipText = 'Select a column value from another table linked on TD ID';
             } else if (columnType === 'string_random') {
                 columnEntry.querySelector('.configStringRandom').style.display = 'block';
+                tooltipText = 'Select random value from set of strings';
             } else if (columnType === 'int_conditional') {
                 columnEntry.querySelector('.configIntConditional').style.display = 'block';
+                tooltipText = 'Define ranges to select a random integer depending on another column';
             } else if (columnType === 'string_conditional_sourced') {
                 columnEntry.querySelector('.configStringConditionalSourced').style.display = 'block';
+                tooltipText = 'Randomly select column(s) from another table based depending on another column';
             } else if (columnType === 'int_random') {
                 columnEntry.querySelector('.configIntRandom').style.display = 'block';
+                tooltipText = 'Select random integer between ranges';
             } else if (columnType === 'string_random_sourced') {
                 columnEntry.querySelector('.configStringRandomSourced').style.display = 'block';
+                tooltipText = 'Select a random value from another column';
             } else if (columnType === 'date_random') {
                 columnEntry.querySelector('.configDateRandom').style.display = 'block';
+                tooltipText = 'Select a random date between two dates defined a days before and days after today';
             } else if (columnType === 'id_random') {
                 columnEntry.querySelector('.configIdRandom').style.display = 'block';
+                tooltipText = 'Select a random ID from the ID Graph';
+            }
+
+            if (tooltipText) {
+                tooltip.textContent = tooltipText;
+                tooltipContainer.classList.add('tooltip-visible');
             }
         }
 
@@ -298,18 +396,23 @@
                     <label for="columnName">Column Name:</label>
                     <input type="text" class="columnName" required>
 
-                    <label for="columnType">Column Type:</label>
+                    <label for="columnType">Column Type:
+                        <span class="tooltip">&#9432
+                            <span class="tooltip-text">Select the type of column to create</span>
+                        </span>
+                    </label>
                     <select class="columnType" required onchange="updateColumnConfig(this)">
                         <option value="">Select Type</option>
-                        <option value="string_linked_sourced">string_linked_sourced</option>
-                        <option value="string_random">string_random</option>
-                        <option value="int_conditional">int_conditional</option>
-                        <option value="string_conditional_sourced">string_conditional_sourced</option>
-                        <option value="int_random">int_random</option>
-                        <option value="string_random_sourced">string_random_sourced</option>
-                        <option value="date_random">date_random</option>
-                        <option value="id_random">id_random</option>
+                        <option value="string_linked_sourced">Linked String</option>
+                        <option value="string_random">Random String</option>
+                        <option value="int_conditional">Conditional Integer</option>
+                        <option value="string_conditional_sourced">Conditional Sourced String</option>
+                        <option value="int_random">Random Integer</option>
+                        <option value="string_random_sourced">Random Source String</option>
+                        <option value="date_random">Random Date</option>
+                        <option value="id_random">Random ID</option>
                     </select>
+                    </span>
 
                     <div class="configStringLinkedSourced dynamic-field">
                         <label for="srcColumnName">Source Column Name:</label>
