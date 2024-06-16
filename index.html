@@ -216,9 +216,11 @@
                         <option value="date_random">Random Date</option>
                         <option value="id_random">Random ID</option>
                     </select>
-                    <span class="tooltip" id="columnTooltip">&#9432
+
+                    <div class="tooltip" style="display: none;">
+                        &#9432
                         <span class="tooltip-text"></span>
-                    </span>
+                    </div>
 
                     <div class="configStringLinkedSourced dynamic-field">
                         <label for="srcColumnName">Source Column Name:</label>
@@ -311,43 +313,43 @@
             const columnType = selectElement.value;
             const columnEntry = selectElement.closest('.column-entry');
             const configSections = columnEntry.querySelectorAll('.dynamic-field');
-            const tooltip = columnEntry.querySelector('.tooltip-text');
             const tooltipContainer = columnEntry.querySelector('.tooltip');
+            const tooltipText = tooltipContainer.querySelector('.tooltip-text');
 
             configSections.forEach(section => section.style.display = 'none');
-            tooltipContainer.classList.remove('tooltip-visible');
+            tooltipContainer.style.display = 'none';
             
-            let tooltipText = '';
+            let tooltipMessage = '';
 
             if (columnType === 'string_linked_sourced') {
                 columnEntry.querySelector('.configStringLinkedSourced').style.display = 'block';
-                tooltipText = 'Select a column value from another table linked on TD ID';
+                tooltipMessage = 'Select a column value from another table linked on TD ID';
             } else if (columnType === 'string_random') {
                 columnEntry.querySelector('.configStringRandom').style.display = 'block';
-                tooltipText = 'Select random value from set of strings';
+                tooltipMessage = 'Select random value from set of strings';
             } else if (columnType === 'int_conditional') {
                 columnEntry.querySelector('.configIntConditional').style.display = 'block';
-                tooltipText = 'Define ranges to select a random integer depending on another column';
+                tooltipMessage = 'Define ranges to select a random integer depending on another column';
             } else if (columnType === 'string_conditional_sourced') {
                 columnEntry.querySelector('.configStringConditionalSourced').style.display = 'block';
-                tooltipText = 'Randomly select column(s) from another table based depending on another column';
+                tooltipMessage = 'Randomly select column(s) from another table based depending on another column';
             } else if (columnType === 'int_random') {
                 columnEntry.querySelector('.configIntRandom').style.display = 'block';
-                tooltipText = 'Select random integer between ranges';
+                tooltipMessage = 'Select random integer between ranges';
             } else if (columnType === 'string_random_sourced') {
                 columnEntry.querySelector('.configStringRandomSourced').style.display = 'block';
-                tooltipText = 'Select a random value from another column';
+                tooltipMessage = 'Select a random value from another column';
             } else if (columnType === 'date_random') {
                 columnEntry.querySelector('.configDateRandom').style.display = 'block';
-                tooltipText = 'Select a random date between two dates defined a days before and days after today';
+                tooltipMessage = 'Select a random date between two dates defined a days before and days after today';
             } else if (columnType === 'id_random') {
                 columnEntry.querySelector('.configIdRandom').style.display = 'block';
-                tooltipText = 'Select a random ID from the ID Graph';
+                tooltipMessage = 'Select a random ID from the ID Graph';
             }
 
-            if (tooltipText) {
-                tooltip.textContent = tooltipText;
-                tooltipContainer.classList.add('tooltip-visible');
+            if (tooltipMessage) {
+                tooltipText.textContent = tooltipMessage;
+                tooltipContainer.style.display = 'inline-block';
             }
         }
 
@@ -412,7 +414,11 @@
                         <option value="date_random">Random Date</option>
                         <option value="id_random">Random ID</option>
                     </select>
-                    </span>
+
+                    <div class="tooltip" style="display: none;">
+                        &#9432
+                        <span class="tooltip-text"></span>
+                    </div>
 
                     <div class="configStringLinkedSourced dynamic-field">
                         <label for="srcColumnName">Source Column Name:</label>
