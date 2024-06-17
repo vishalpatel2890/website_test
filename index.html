@@ -226,8 +226,10 @@
                         <option value="string_random_sourced">Random Source String</option>
                         <option value="int_random">Random Integer</option>
                         <option value="int_conditional">Conditional Integer</option>
+                        <option value="float_random">Random Float</option>
                         <option value="date_random">Random Date</option>
                         <option value="id_random">Random ID</option>
+                        <option value="uuid_random">Random UUID</option>
                         <option value="id_primary">Primary ID</option>
                     </select>
 
@@ -286,6 +288,17 @@
                         <input type="number" class="maxValue">
                     </div>
 
+                    <div class="configFloatRandom dynamic-field">
+                        <label for="minValue">Min Value:</label>
+                        <input type="number" class="minValue">
+                        
+                        <label for="maxValue">Max Value:</label>
+                        <input type="number" class="maxValue">
+                        
+                        <label for="round">Round:</label>
+                        <input type="number" class="round">
+                    </div>
+
                     <div class="configStringRandomSourced dynamic-field">
                         <label for="srcTableRandom">Source Table:</label>
                         <input type="text" class="srcTableRandom">
@@ -311,6 +324,17 @@
                     <div class="configIdRandom dynamic-field">
                         <label for="idType">ID Type:</label>
                         <input type="text" class="idType">
+                    </div>
+
+                    <div class="configUuidRandom dynamic-field">
+                        <label for="uuidType">UUID Type:</label>
+                        <select class="uuidType">
+                            <option value="hex">Hex</option>
+                            <option value="base64">Base64</option>
+                            <option value="base64_sha256">Base64 + SHA256</option>
+                            <option value="hex_sha256">Hex + SHA256</option>
+                            <option value="uuid">UUID</option>
+                        </select>
                     </div>
 
                     <div class="configIdPrimary dynamic-field">
@@ -358,6 +382,9 @@
             } else if (columnType === 'int_random') {
                 columnEntry.querySelector('.configIntRandom').style.display = 'block';
                 tooltipMessage = 'Select random integer between ranges';
+            } else if (columnType === 'float_random') {
+                columnEntry.querySelector('.configFloatRandom').style.display = 'block';
+                tooltipMessage = 'Select random float between ranges with rounding';
             } else if (columnType === 'string_random_sourced') {
                 columnEntry.querySelector('.configStringRandomSourced').style.display = 'block';
                 tooltipMessage = 'Select a random value from another column';
@@ -367,6 +394,9 @@
             } else if (columnType === 'id_random') {
                 columnEntry.querySelector('.configIdRandom').style.display = 'block';
                 tooltipMessage = 'Select a random ID from the ID Graph';
+            } else if (columnType === 'uuid_random') {
+                columnEntry.querySelector('.configUuidRandom').style.display = 'block';
+                tooltipMessage = 'Generate a random UUID';
             } else if (columnType === 'id_primary') {
                 columnEntry.querySelector('.configIdPrimary').style.display = 'block';
                 tooltipMessage = 'Primary ID for the table';
@@ -436,8 +466,10 @@
                         <option value="string_random_sourced">Random Source String</option>
                         <option value="int_random">Random Integer</option>
                         <option value="int_conditional">Conditional Integer</option>
+                        <option value="float_random">Random Float</option>
                         <option value="date_random">Random Date</option>
                         <option value="id_random">Random ID</option>
+                        <option value="uuid_random">Random UUID</option>
                         <option value="id_primary">Primary ID</option>
                     </select>
 
@@ -496,6 +528,17 @@
                         <input type="number" class="maxValue">
                     </div>
 
+                    <div class="configFloatRandom dynamic-field">
+                        <label for="minValue">Min Value:</label>
+                        <input type="number" class="minValue">
+                        
+                        <label for="maxValue">Max Value:</label>
+                        <input type="number" class="maxValue">
+                        
+                        <label for="round">Round:</label>
+                        <input type="number" class="round">
+                    </div>
+
                     <div class="configStringRandomSourced dynamic-field">
                         <label for="srcTableRandom">Source Table:</label>
                         <input type="text" class="srcTableRandom">
@@ -521,6 +564,17 @@
                     <div class="configIdRandom dynamic-field">
                         <label for="idType">ID Type:</label>
                         <input type="text" class="idType">
+                    </div>
+
+                    <div class="configUuidRandom dynamic-field">
+                        <label for="uuidType">UUID Type:</label>
+                        <select class="uuidType">
+                            <option value="hex">Hex</option>
+                            <option value="base64">Base64</option>
+                            <option value="base64_sha256">Base64 + SHA256</option>
+                            <option value="hex_sha256">Hex + SHA256</option>
+                            <option value="uuid">UUID</option>
+                        </select>
                     </div>
 
                     <div class="configIdPrimary dynamic-field">
@@ -592,6 +646,15 @@
           column_config: 
             min: ${minValue}
             max: ${maxValue}`;
+                } else if (columnType === 'float_random') {
+                    const minValue = columnEntry.querySelector('.minValue').value;
+                    const maxValue = columnEntry.querySelector('.maxValue').value;
+                    const round = columnEntry.querySelector('.round').value;
+                    columnConfig = `
+          column_config: 
+            min: ${minValue}
+            max: ${maxValue}
+            round: ${round}`;
                 } else if (columnType === 'string_random_sourced') {
                     const srcTableRandom = columnEntry.querySelector('.srcTableRandom').value;
                     const srcColumnsRandom = columnEntry.querySelector('.srcColumnsRandom').value.split(',').map(val => val.trim()).join(', ');
@@ -615,6 +678,11 @@
                     columnConfig = `
           column_config: 
             id_type_1: ${idType}`;
+                } else if (columnType === 'uuid_random') {
+                    const uuidType = columnEntry.querySelector('.uuidType').value;
+                    columnConfig = `
+          column_config: 
+            type: ${uuidType}`;
                 } else if (columnType === 'id_primary') {
                     const idTypePrimary = columnEntry.querySelector('.idTypePrimary').value;
                     columnConfig = `
