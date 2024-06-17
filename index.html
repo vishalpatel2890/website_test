@@ -132,6 +132,14 @@
             visibility: visible;
             opacity: 1;
         }
+        .slider-container {
+            display: flex;
+            align-items: center;
+        }
+        .slider-container input[type="range"] {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -165,34 +173,59 @@
                             <span class="tooltip-text">Attribute or Behavior</span>
                         </span>
                     </label>
-                    <input type="text" id="type" name="type" required>
+                    <select id="type" name="type" required>
+                        <option value="attribute">Attribute</option>
+                        <option value="behavior">Behavior</option>
+                    </select>
                 </div>
                 <div class="form-column">
-                    <label for="minRecordsPerProfile">Min Records Per Profile:
+                    <label for="baseTable">Base Table:
                         <span class="tooltip">&#9432
-                            <span class="tooltip-text">Min number of records to create in this table per profile</span>
+                            <span class="tooltip-text">Name of the base table</span>
                         </span>
                     </label>
-                    <input type="number" id="minRecordsPerProfile" name="minRecordsPerProfile" required>
+                    <input type="text" id="baseTable" name="baseTable" required>
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-column">
-                    <label for="maxRecordsPerProfile">Max Records Per Profile:
+                    <label for="baseId">Base ID:
                         <span class="tooltip">&#9432
-                            <span class="tooltip-text">Max number of records to create in this table per profile</span>
+                            <span class="tooltip-text">Name of the base ID column</span>
                         </span>
                     </label>
-                    <input type="number" id="maxRecordsPerProfile" name="maxRecordsPerProfile" required>
+                    <input type="text" id="baseId" name="baseId" required>
                 </div>
                 <div class="form-column">
-                    <label for="percentProfilesWithRecords">Percent Profiles With Records:
+                    <label for="minRecordsPerId">Min Records Per ID:
                         <span class="tooltip">&#9432
-                            <span class="tooltip-text">Percent of random records that should have no records in this table</span>
+                            <span class="tooltip-text">Min number of records to create in this table per ID</span>
                         </span>
                     </label>
-                    <input type="number" id="percentProfilesWithRecords" name="percentProfilesWithRecords" required>
+                    <input type="number" id="minRecordsPerId" name="minRecordsPerId" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-column">
+                    <label for="maxRecordsPerId">Max Records Per ID:
+                        <span class="tooltip">&#9432
+                            <span class="tooltip-text">Max number of records to create in this table per ID</span>
+                        </span>
+                    </label>
+                    <input type="number" id="maxRecordsPerId" name="maxRecordsPerId" required>
+                </div>
+                <div class="form-column">
+                    <label for="percentWithRecords">Percent With Records:
+                        <span class="tooltip">&#9432
+                            <span class="tooltip-text">Percent of random records that should have records in this table</span>
+                        </span>
+                    </label>
+                    <div class="slider-container">
+                        <input type="range" id="percentWithRecords" name="percentWithRecords" min="0" max="100" value="60" oninput="updateSliderValue('percentWithRecords')">
+                        <span id="percentWithRecordsValue">60</span>%
+                    </div>
                 </div>
             </div>
 
@@ -200,10 +233,13 @@
                 <div class="form-column">
                     <label for="percentWithMultipleRecords">Percent With Multiple Records:
                         <span class="tooltip">&#9432
-                            <span class="tooltip-text">Percent of random records that should have multiple records in this table</span>
+                            <span class="tooltip-text">Percent of records that should have multiple records in this table</span>
                         </span>
                     </label>
-                    <input type="number" id="percentWithMultipleRecords" name="percentWithMultipleRecords" required>
+                    <div class="slider-container">
+                        <input type="range" id="percentWithMultipleRecords" name="percentWithMultipleRecords" min="0" max="100" value="45" oninput="updateSliderValue('percentWithMultipleRecords')">
+                        <span id="percentWithMultipleRecordsValue">45</span>%
+                    </div>
                 </div>
             </div>
 
@@ -355,6 +391,12 @@
     </div>
 
     <script>
+        function updateSliderValue(sliderId) {
+            const slider = document.getElementById(sliderId);
+            const valueSpan = document.getElementById(sliderId + 'Value');
+            valueSpan.textContent = slider.value;
+        }
+
         function updateColumnConfig(selectElement) {
             const columnType = selectElement.value;
             const columnEntry = selectElement.closest('.column-entry');
@@ -591,9 +633,11 @@
             const tableName = document.getElementById('tableName').value;
             const index = document.getElementById('index').value;
             const type = document.getElementById('type').value;
-            const minRecordsPerProfile = document.getElementById('minRecordsPerProfile').value;
-            const maxRecordsPerProfile = document.getElementById('maxRecordsPerProfile').value;
-            const percentProfilesWithRecords = document.getElementById('percentProfilesWithRecords').value;
+            const baseTable = document.getElementById('baseTable').value;
+            const baseId = document.getElementById('baseId').value;
+            const minRecordsPerId = document.getElementById('minRecordsPerId').value;
+            const maxRecordsPerId = document.getElementById('maxRecordsPerId').value;
+            const percentWithRecords = document.getElementById('percentWithRecords').value;
             const percentWithMultipleRecords = document.getElementById('percentWithMultipleRecords').value;
 
             let columns = [];
@@ -700,9 +744,11 @@ tables:
   - name: ${tableName}
     index: ${index}
     type: ${type}
-    min_records_per_profile: ${minRecordsPerProfile}
-    max_records_per_profile: ${maxRecordsPerProfile}
-    percent_profiles_with_records: ${percentProfilesWithRecords}
+    base_table: ${baseTable}
+    base_id: ${baseId}
+    min_records_per_id: ${minRecordsPerId}
+    max_records_per_id: ${maxRecordsPerId}
+    percent_with_records: ${percentWithRecords}
     percent_with_multiple_records: ${percentWithMultipleRecords}
     columns:${columns.join('')}
             `;
