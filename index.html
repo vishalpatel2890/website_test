@@ -147,15 +147,16 @@
         <h1>YAML Generator</h1>
         <form id="yamlForm">
             <div class="form-row">
-                <div class="form-column">
-                    <label for="tableName">
-                        Table Name:
-                        <span class="tooltip">&#9432
-                            <span class="tooltip-text">Enter name of table you would like to create</span>
-                        </span>
-                    </label>
-                    <input type="text" id="tableName" name="tableName" required>
-                </div>
+                <label for="tableName">
+                    Table Name:
+                    <span class="tooltip">&#9432
+                        <span class="tooltip-text">Enter name of table you would like to create</span>
+                    </span>
+                </label>
+                <input type="text" id="tableName" name="tableName" required>
+            </div>
+            
+            <div class="form-row">
                 <div class="form-column">
                     <label for="index">Index:
                         <span class="tooltip">&#9432
@@ -164,9 +165,6 @@
                     </label>
                     <input type="number" id="index" name="index" required>
                 </div>
-            </div>
-
-            <div class="form-row">
                 <div class="form-column">
                     <label for="type">Type:
                         <span class="tooltip">&#9432
@@ -178,6 +176,9 @@
                         <option value="behavior">Behavior</option>
                     </select>
                 </div>
+            </div>
+            
+            <div class="form-row">
                 <div class="form-column">
                     <label for="baseTable">Base Table:
                         <span class="tooltip">&#9432
@@ -186,9 +187,6 @@
                     </label>
                     <input type="text" id="baseTable" name="baseTable" required>
                 </div>
-            </div>
-
-            <div class="form-row">
                 <div class="form-column">
                     <label for="baseId">Base ID:
                         <span class="tooltip">&#9432
@@ -197,6 +195,9 @@
                     </label>
                     <input type="text" id="baseId" name="baseId" required>
                 </div>
+            </div>
+            
+            <div class="form-row">
                 <div class="form-column">
                     <label for="minRecordsPerId">Min Records Per ID:
                         <span class="tooltip">&#9432
@@ -205,9 +206,6 @@
                     </label>
                     <input type="number" id="minRecordsPerId" name="minRecordsPerId" required>
                 </div>
-            </div>
-
-            <div class="form-row">
                 <div class="form-column">
                     <label for="maxRecordsPerId">Max Records Per ID:
                         <span class="tooltip">&#9432
@@ -216,6 +214,9 @@
                     </label>
                     <input type="number" id="maxRecordsPerId" name="maxRecordsPerId" required>
                 </div>
+            </div>
+            
+            <div class="form-row">
                 <div class="form-column">
                     <label for="percentWithRecords">Percent With Records:
                         <span class="tooltip">&#9432
@@ -227,9 +228,6 @@
                         <span id="percentWithRecordsValue">60</span>%
                     </div>
                 </div>
-            </div>
-
-            <div class="form-row">
                 <div class="form-column">
                     <label for="percentWithMultipleRecords">Percent With Multiple Records:
                         <span class="tooltip">&#9432
@@ -242,13 +240,13 @@
                     </div>
                 </div>
             </div>
-
+            
             <div id="columnsContainer" class="columns-container">
                 <h3>Column Configuration</h3>
                 <div class="column-entry">
                     <label for="columnName">Column Name:</label>
                     <input type="text" class="columnName" required>
-
+                    
                     <label for="columnType">Column Type:
                         <span class="tooltip">&#9432
                             <span class="tooltip-text">Select the type of column to create</span>
@@ -268,12 +266,12 @@
                         <option value="uuid_random">Random UUID</option>
                         <option value="id_primary">Primary ID</option>
                     </select>
-
+                    
                     <div class="tooltip" style="display: none;">
                         &#9432
                         <span class="tooltip-text"></span>
                     </div>
-
+                    
                     <div class="configStringLinkedSourced dynamic-field">
                         <label for="srcColumnName">Source Column Name:</label>
                         <input type="text" class="srcColumnName">
@@ -281,12 +279,12 @@
                         <label for="srcColumnTable">Source Column Table:</label>
                         <input type="text" class="srcColumnTable">
                     </div>
-
+                    
                     <div class="configStringRandom dynamic-field">
                         <label for="randomValues">Random Values (comma separated):</label>
                         <input type="text" class="randomValues">
                     </div>
-
+                    
                     <div class="configIntConditional dynamic-field">
                         <label for="conditionalAttribute">Conditional Attribute:</label>
                         <input type="text" class="conditionalAttribute">
@@ -304,18 +302,18 @@
                         </div>
                         <button type="button" onclick="addCondition(this)">Add Another Condition</button>
                     </div>
-
+                    
                     <div class="configStringConditionalSourced dynamic-field">
                         <label for="conditionalAttributeSrc">Conditional Attribute:</label>
                         <input type="text" class="conditionalAttributeSrc">
-
+                        
                         <label for="srcTable">Source Table:</label>
                         <input type="text" class="srcTable">
-
+                        
                         <label for="srcColumns">Source Columns (comma separated):</label>
                         <input type="text" class="srcColumns">
                     </div>
-
+                    
                     <div class="configIntRandom dynamic-field">
                         <label for="minValue">Min Value:</label>
                         <input type="number" class="minValue">
@@ -323,7 +321,7 @@
                         <label for="maxValue">Max Value:</label>
                         <input type="number" class="maxValue">
                     </div>
-
+                    
                     <div class="configFloatRandom dynamic-field">
                         <label for="minValue">Min Value:</label>
                         <input type="number" class="minValue">
@@ -334,34 +332,34 @@
                         <label for="round">Round:</label>
                         <input type="number" class="round">
                     </div>
-
+                    
                     <div class="configStringRandomSourced dynamic-field">
                         <label for="srcTableRandom">Source Table:</label>
                         <input type="text" class="srcTableRandom">
-
+                        
                         <label for="srcColumnsRandom">Source Columns (comma separated):</label>
                         <input type="text" class="srcColumnsRandom">
                     </div>
-
+                    
                     <div class="configDateRandom dynamic-field">
                         <label for="newColMin">New Col Min:</label>
                         <input type="number" class="newColMin">
-
+                        
                         <label for="newColMax">New Col Max:</label>
                         <input type="number" class="newColMax">
-
+                        
                         <label for="appendColMin">Append Col Min:</label>
                         <input type="number" class="appendColMin">
-
+                        
                         <label for="appendColMax">Append Col Max:</label>
                         <input type="number" class="appendColMax">
                     </div>
-
+                    
                     <div class="configIdRandom dynamic-field">
                         <label for="idType">ID Type:</label>
                         <input type="text" class="idType">
                     </div>
-
+                    
                     <div class="configUuidRandom dynamic-field">
                         <label for="uuidType">UUID Type:</label>
                         <select class="uuidType">
@@ -372,7 +370,7 @@
                             <option value="uuid">UUID</option>
                         </select>
                     </div>
-
+                    
                     <div class="configIdPrimary dynamic-field">
                         <label for="idTypePrimary">ID Type:</label>
                         <input type="text" class="idTypePrimary">
