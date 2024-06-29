@@ -1,4 +1,4 @@
-[Config](#core profile)
+[Config](#core_profile)
 # SQL Based Mock Data Generator
 
 This is a workflow designed to generate mock customer data. It has been designed to generate the source tables that customers would typically provide when setting up a CDP for Implementation/POC. It designed to ensure records will logically link across tables and ultimately tie back to a unified profile. 
